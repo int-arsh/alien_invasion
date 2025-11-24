@@ -2,6 +2,7 @@ import pygame
 from settings import Settings
 
 
+
 class Ship:
     def __init__(self, ai):
         self.screen = ai.screen

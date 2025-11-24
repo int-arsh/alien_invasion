@@ -2,6 +2,8 @@ import pygame
 import sys
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
+from alien import Alien
 
 class AlienInvasion:
 
@@ -24,6 +26,13 @@ class AlienInvasion:
         # parameter that gives Ship access to the game’s
         # resources, such as the screen object
 
+        self.bullets = pygame.sprite.Group()
+        # print("init ",self.bullets)
+
+        self.aliens = pygame.sprite.Group()
+
+        self._create_fleet()
+
 
         
 
@@ -39,6 +48,8 @@ class AlienInvasion:
             # after we’ve checked for keyboard
             # events and before we update the screen
             self.ship.update()
+
+            self._update_bullets()
 
             self._update_screen()
 
@@ -62,6 +73,9 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullets()
+
 
     def _check_keyup_events(self, event):    
         if event.key == pygame.K_RIGHT:
@@ -69,12 +83,71 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _fire_bullets(self):
+        """create a new bullet and add it to the group"""
+        if len(self.bullets) < self.set.bullet_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+            # print("on func fire ",self.bullets)
+
+    def _update_bullets(self):
+        self.bullets.update()
+            # print("update ",self.bullets)
+
+        # getv rid of the bullets that have disaapeared from the screen
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0: 
+                self.bullets.remove(bullet)
+        # print(len(self.bullets))
+
+    def _create_fleet(self):
+        alien = Alien(self) # will not be added to screen as not part of group
+        # alien.add(self.aliens)
+        alien_width, alien_height = alien.rect.size
+        avail_space_x = self.set.width - (2*alien_width)
+        num_aliens_x = avail_space_x // (2*alien_width)
+        
+        # determine the no. of rows of aliens that fit the screen
+        ship_height = self.ship.rect.height
+        avail_space_y = (self.set.height - ship_height 
+                         - (3*alien_height))
+        num_rows = avail_space_y // (2*alien_height)
+        '''
+        # first row of the alien
+        for alien_number in range(num_aliens_x):
+            # create an alien and place it on the row
+            self._create_alien(alien_number)
+        '''
+        # create a full fleet of aliens
+        for row_num in range(num_rows):
+            for alien_number in range(num_aliens_x):
+                # create an alien and place it on the row
+                self._create_alien(alien_number, row_num)
+            
+            
+    def _create_alien(self, alien_number, row_num):
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.y = alien_height + 2 * alien_height * row_num
+        alien.rect.x = alien.x
+        alien.rect.y = alien.y
+        self.aliens.add(alien)
+        
+
+
     # helper method screen update
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         # redraw the screen during each pass through the loop
         self.screen.fill(self.set.bg_color)
         self.ship.blitme()
+
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+
+        self.aliens.draw(self.screen)
+
         # flip the display to put ur work on screen
         pygame.display.flip()
 
