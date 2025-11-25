@@ -50,6 +50,8 @@ class AlienInvasion:
             self.ship.update()
 
             self._update_bullets()
+            
+            self._update_aliens()
 
             self._update_screen()
 
@@ -99,6 +101,11 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0: 
                 self.bullets.remove(bullet)
         # print(len(self.bullets))
+    
+    def _update_aliens(self):
+        """update the positions of all aliens in the fleet. """
+        self._check_fleet_edges()
+        self.aliens.update()  # calls update on group of alien
 
     def _create_fleet(self):
         alien = Alien(self) # will not be added to screen as not part of group
@@ -133,6 +140,20 @@ class AlienInvasion:
         alien.rect.x = alien.x
         alien.rect.y = alien.y
         self.aliens.add(alien)
+        
+    def _check_fleet_edges(self):
+        """respond approppp if any alien reached the end of the ship"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+    
+    def _change_fleet_direction(self):
+        """drop the entire fleet and change the entire fleet direction."""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.set.fleet_drop_speed
+        self.set.fleet_direction *= -1
+        
         
 
 
