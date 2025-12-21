@@ -1,12 +1,14 @@
-# 🚀 Alien Invasion
+#  Alien Invasion
 
 A classic arcade-style space shooter game built with Python and Pygame. Defend Earth from waves of alien invaders in this action-packed retro gaming experience!
 
-## �� About
+![Gameplay Demo](src/public/preview.gif)
+
+##  About
 
 Alien Invasion is a 2D arcade game where you control a spaceship at the bottom of the screen, shooting at descending fleets of aliens. As you progress through levels, the game becomes increasingly challenging with faster-moving enemies and more intense gameplay.
 
-## ✨ Features
+##  Features
 
 - **Dynamic Difficulty**: Game speed increases progressively as you clear alien fleets
 - **Fullscreen Gameplay**: Immersive gaming experience in fullscreen mode
@@ -58,7 +60,7 @@ Destroy all aliens before they reach the bottom of the screen. Each alien you de
    pip install -e .
    ```
 
-## 🚀 Running the Game
+##  Running the Game
 
 From the project root directory:
 

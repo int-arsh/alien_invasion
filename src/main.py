@@ -1,3 +1,4 @@
+import asyncio
 import pygame
 import sys
 from time import sleep
@@ -16,7 +17,7 @@ class AlienInvasion:
 
         pygame.init()
 
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((1200, 800))
         self.set.width = self.screen.get_rect().width
         self.set.height = self.screen.get_rect().height
 
@@ -47,10 +48,10 @@ class AlienInvasion:
         # make the play button
         self.play_button = Button(self, "Play")
 
-
+        self.clock = pygame.time.Clock()
         
 
-    def run_game(self):
+    async def run_game(self):
         while(True):
             # watch for any keyboard event
             # To access the events that Pygame detects
@@ -68,6 +69,9 @@ class AlienInvasion:
                 self._update_aliens()
 
             self._update_screen()
+            self.clock.tick(60)
+            await asyncio.sleep(0)
+            
 
             
 
@@ -293,4 +297,4 @@ class AlienInvasion:
 if __name__ == "__main__":
     # make the game instance, and run the game
     ai = AlienInvasion()
-    ai.run_game()
+    asyncio.run(ai.run_game())
